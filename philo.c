@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 11:48:49 by mmoramov          #+#    #+#             */
-/*   Updated: 2023/06/25 13:33:27 by mmoramov         ###   ########.fr       */
+/*   Updated: 2023/06/25 15:52:16 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,15 @@ t_var	args_init(char **argv)
 	t_var	var;
 
 	var.number_of_philosophers = ft_atoi(argv[1]);
-	var.time_to_die = ft_atoi(argv[2]);
-	var.time_to_eat = ft_atoi(argv[3]);
-	var.time_to_sleep = ft_atoi(argv[4]);
+	var.tm_die = ft_atoi(argv[2]);
+	var.tm_eat = ft_atoi(argv[3]);
+	var.tm_sleep = ft_atoi(argv[4]);
+	if(argv[5])
+		var.nr_must_eat = ft_atoi(argv[5]);
+	else
+		var.nr_must_eat = -1;
 
-	//TODO error handling if inputs are correct
+	//TODO error handling: zeros
 	return	(var);
 }
 
@@ -73,13 +77,22 @@ int	main(int argc, char **argv)
 	tm_passed = (tm_end.tv_usec/1000 + tm_end.tv_sec*1000)  - (tm_start.tv_usec/1000 + tm_start.tv_sec*1000);
 	printf("Time passed: %d\n",tm_passed);
 
-	if (argc != 5) //TODO 6th
-		return(1); //TODO error
+	if (argc != 5 && argc != 6)
+	{
+		ft_putstr_fd("Please pass these 4 arguments:\n1. number_of_philosophers\n2. time_to_die\n3. time_to_eat\n4. time_to_sleep\n5. number_of_times_each_philosopher_must_eat (optional)", 2);
+		return(1);
+	}
+	if (ft_args_check(argc, argv) == 1)
+	{
+		ft_putstr_fd("Error: invalid arguments\n", 2);
+		return(1);
+	}
 	var = args_init(argv);
 
 	printf("number_of_philosophers: %d\n",var.number_of_philosophers);
-	printf("time_to_die: %d\n",var.time_to_die);
-	printf("time_to_eat: %d\n",var.time_to_eat);
-	printf("time_to_sleep: %d\n",var.time_to_sleep);
+	printf("tm_die: %d\n",var.tm_die);
+	printf("tm_eat: %d\n",var.tm_eat);
+	printf("tm_sleep: %d\n",var.tm_sleep);
+	printf("nr_must_eat: %d\n",var.nr_must_eat);
 	return(0);
 }
