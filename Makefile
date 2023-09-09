@@ -6,7 +6,7 @@
 #    By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/25 13:17:12 by mmoramov          #+#    #+#              #
-#    Updated: 2023/06/25 13:26:43 by mmoramov         ###   ########.fr        #
+#    Updated: 2023/09/09 15:14:10 by mmoramov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@
 NAME = philo
 HEADER = philo.h
 C_FLAGS = -Wall -Wextra -Werror -MMD
+#-lpthread
 RM = rm -f
 
 # Colors
@@ -27,7 +28,7 @@ MAGENTA = \033[0;95m
 CYAN = \033[0;96m
 WHITE = \033[0;97m
 
-SRC_FILES = philo philo_utils
+SRC_FILES = philo philo_utils philo_timeutils
 
 SRC = $(addsuffix .c, $(SRC_FILES))
 OBJ = $(SRC:.c=.o)
