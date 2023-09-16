@@ -6,96 +6,88 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 11:48:49 by mmoramov          #+#    #+#             */
-/*   Updated: 2023/09/09 15:13:54 by mmoramov         ###   ########.fr       */
+/*   Updated: 2023/09/16 15:39:29 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void philos_init(t_var *var)
+void	ft_print_line(t_philo *aux, char *s)
 {
-	int i;
-	i = 0;
+	int	i;
 
-	while (i < (var->number_of_philosophers))
-	{
-		var->philo[i].philo_nbr = i + 1;
-		var->philo[i].tm_die = var->tm_die;
-		var->philo[i].eaten_times = var->nr_must_eat;
-		pthread_mutex_init(&var->philo[i].l_fork, NULL);
-		if (i == 0)
-			var->philo[i].r_fork = &var->philo[var->number_of_philosophers-1].l_fork;
-		else
-			var->philo[i].r_fork = &var->philo[i-1].l_fork;
-		printf ("info about philo %d: nbr %d, tmdie %d eaten times %d\n",i, var->philo[i].philo_nbr, var->philo[i].tm_die, var->philo[i].eaten_times);
-		i++;
-	}
-	printf ("nbr of philos %d\n", var->number_of_philosophers);
-
-
+	i = ft_time_passed(aux->var);
+	pthread_mutex_lock(&aux->var->print);
+	printf("%d %d %s\n", i, aux->philo_nbr, s);
+	pthread_mutex_unlock(&aux->var->print);
 }
 
-void var_init(t_var *var, char **argv)
+void*	routine(void *arg)
 {
-	var->nr_must_eat = 0;
-	var->number_of_philosophers = ft_atoi(argv[1]);
-	var->tm_die = ft_atoi(argv[2]);
-	var->tm_eat = ft_atoi(argv[3]);
-	var->tm_sleep = ft_atoi(argv[4]);
-	if (argv[5])
-		var->nr_must_eat = ft_atoi(argv[5]);
-	else
-		var->nr_must_eat = -1;
-	var->philo = malloc(var->number_of_philosophers * sizeof(t_philo));
-	philos_init(var);
+	t_philo	*aux;
 
-	//TODO error handling: zeros or letter
+	aux = (t_philo *)arg;
+	pthread_mutex_lock(&aux->var->ready);
+	pthread_mutex_unlock(&aux->var->ready);
+	if ((aux->philo_nbr) % 2 == 1)
+	{
+		ft_sleep(1, aux->var);
+		pthread_mutex_lock(&aux->var->ready);
+		pthread_mutex_unlock(&aux->var->ready);
+	}
+	pthread_mutex_lock(&aux->l_fork);
+	pthread_mutex_lock(aux->r_fork);
+	ft_print_line(aux, FORK);
+	ft_print_line(aux, FORK);
+	ft_print_line(aux, EAT);
+	ft_sleep(aux->var->tm_eat, aux->var);
+	pthread_mutex_unlock(&aux->l_fork);
+	pthread_mutex_unlock(aux->r_fork);
+	ft_print_line(aux, SLEEP);
+	ft_sleep(aux->var->tm_sleep, aux->var);
+	ft_print_line(aux, THINK);
+	return (void*) 0;
 }
 
 int	main(int argc, char **argv)
 {
-	struct timeval tm_start;
-	struct timeval tm_end;
-	suseconds_t tm_passed;
-	t_var var;
-
-	gettimeofday(&tm_start, NULL);
-
-	printf("Seconds since 1/1/1970: %lu\n",tm_start.tv_sec);
-	printf("Microseconds: %d\n",tm_start.tv_usec);
-	printf("Milliseconds: %d\n",tm_start.tv_usec/1000);
-
-	//usleep(1000);
-	//ft_sleep(1500);
-
-	gettimeofday(&tm_end, NULL);
-	printf("Seconds since 1/1/1970: %lu\n",tm_end.tv_sec);
-	printf("Microseconds: %d\n",tm_end.tv_usec);
-	printf("Milliseconds: %d\n",tm_end.tv_usec/1000);
-
-	tm_passed = (tm_end.tv_usec/1000 + tm_end.tv_sec*1000)  - (tm_start.tv_usec/1000 + tm_start.tv_sec*1000);
-	printf("Time passed: %d\n",tm_passed);
+	t_var	var;
+	int		i;
 
 	if (argc != 5 && argc != 6)
 	{
-		ft_putstr_fd("Please pass at least 4 arguments:\n1. number_of_philosophers\n2. time_to_die\n3. time_to_eat\n4. time_to_sleep\n5. number_of_times_each_philosopher_must_eat (optional)", 2);
+		printf("Please pass at least 4 arguments:\n1. number_of_philosophers\n2. time_to_die\n3. time_to_eat\n4. time_to_sleep\n5. number_of_times_each_philosopher_must_eat (optional)");
 		return(1);
 	}
 	if (ft_args_check(argc, argv) == 1)
 	{
-		ft_putstr_fd("Error: invalid arguments\n", 2);
+		printf("Error: invalid arguments\n");
 		return(1);
 	}
 	var_init(&var, argv);
+	ft_sleep(1, &var);
+	pthread_mutex_unlock(&var.ready);
+	gettimeofday(&var.tm_start, NULL);
 
-	printf("number_of_philosophers: %d\n",var.number_of_philosophers);
-	printf("tm_die: %d\n",var.tm_die);
-	printf("tm_eat: %d\n",var.tm_eat);
-	printf("tm_sleep: %d\n",var.tm_sleep);
-	printf("nr_must_eat: %d\n",var.nr_must_eat);
-	printf ("final info about philo 1: nbr %d, tmdie %d eaten times %d\n", var.philo[1].philo_nbr, var.philo[1].tm_die, var.philo[1].eaten_times);
+	i = 0;
+	while (i < (var.number_of_philosophers))
+	{
+		if (pthread_join(var.threads[i], NULL) != 0)
+		{
+			return 2;
+		}
+		i++;
+	}
 
-
+	i = 0;
+	while (i < (var.number_of_philosophers))
+	{
+		pthread_mutex_destroy(&var.philo[i].l_fork);
+		i++;
+	}
+	pthread_mutex_destroy(&var.print);
+	pthread_mutex_destroy(&var.ready);
+	// free 2 mallocs;
 	return(0);
 }
 

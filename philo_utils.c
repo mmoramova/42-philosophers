@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 13:26:23 by mmoramov          #+#    #+#             */
-/*   Updated: 2023/06/25 15:34:19 by mmoramov         ###   ########.fr       */
+/*   Updated: 2023/09/16 15:27:02 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ int ft_args_check(int argc, char **argv)
 			return (1);
 		while (argv[i][j])
 		{
-			if ((argv[i][j] < 9 || argv[i][j] > 13) && argv[i][j] != 32 && (argv[i][j] < '0' || argv[i][j] > '9'))
+			if ((argv[i][j] < 9 || argv[i][j] > 13) && argv[i][j] != 32 && (argv[i][j] < '0' || argv[i][j] > '9'))  //?can i have empty spaces
 				return (1);
 			j++;
 		}
 		i++;
 	}
-	if (ft_atoi(argv[1]) < 2) //TODO, can we have one philo?
+	if (ft_atoi(argv[1]) < 2) //TODO, one philo
 		return (1);
 	return (0);
 }
