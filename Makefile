@@ -6,14 +6,15 @@
 #    By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/25 13:17:12 by mmoramov          #+#    #+#              #
-#    Updated: 2023/09/16 15:34:36 by mmoramov         ###   ########.fr        #
+#    Updated: 2023/09/16 20:45:06 by mmoramov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME = philo
 HEADER = philo.h
-C_FLAGS = -Wall -Wextra -Werror -MMD
+C_FLAGS = -Wall -Wextra -Werror -MMD -pthread
+#-g -fsanitize=thread
 #-lpthread
 RM = rm -f
 

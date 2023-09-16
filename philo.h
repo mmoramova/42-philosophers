@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 13:16:37 by mmoramov          #+#    #+#             */
-/*   Updated: 2023/09/16 15:40:02 by mmoramov         ###   ########.fr       */
+/*   Updated: 2023/09/16 20:24:52 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ struct s_philo
 	int					philo_nbr;
 	pthread_mutex_t		*r_fork;
 	pthread_mutex_t		l_fork;
-	int					eaten_times;
+	int					eaten_times_left;
 	int					tm_die;
 	struct s_var		*var;
 
@@ -49,7 +49,7 @@ struct s_var
 	struct timeval	tm_start;
 	pthread_mutex_t	print;
 	pthread_mutex_t	ready;
-	int				cnt_ready;
+	int				finish;
 	struct s_philo	*philo;
 	pthread_t		*threads;
 };
@@ -57,9 +57,6 @@ struct s_var
 int		ft_get_time_ms(void);
 int	ft_sleep(int millisec, t_var *var);
 int		ft_atoi(const char *str);
-void	ft_putchar_fd(char c, int fd);
-void	ft_putstr_fd(char *s, int fd);
-size_t	ft_strlen(const char *s);
 int		ft_args_check(int argc, char **argv);
 int	ft_time_passed(t_var *var);
 void* routine(void *arg);
