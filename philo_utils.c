@@ -6,11 +6,31 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 13:26:23 by mmoramov          #+#    #+#             */
-/*   Updated: 2023/09/16 20:24:56 by mmoramov         ###   ########.fr       */
+/*   Updated: 2023/09/17 11:14:44 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	ft_sleep(int millisec, t_var *var)
+{
+	int	tm_end;
+
+	tm_end = ft_time_passed(var->tm_start) + millisec;
+	while(ft_time_passed(var->tm_start) < tm_end)
+		usleep(200);
+	return(0);
+}
+
+int	ft_time_passed(struct timeval tm_start)
+{
+	struct timeval	tm_end;
+	suseconds_t		tm_passed;
+
+	gettimeofday(&tm_end, NULL);
+	tm_passed = (tm_end.tv_usec/1000 + tm_end.tv_sec*1000) - (tm_start.tv_usec/1000 + tm_start.tv_sec*1000);
+	return(tm_passed);
+}
 
 size_t	ft_strlen(const char *s)
 {
@@ -44,8 +64,6 @@ int	ft_args_check(int argc, char **argv)
 			return (1);
 		i++;
 	}
-	if (ft_atoi(argv[1]) < 1)
-		return (1);
 	return (0);
 }
 
