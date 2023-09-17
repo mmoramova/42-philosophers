@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 13:26:23 by mmoramov          #+#    #+#             */
-/*   Updated: 2023/09/17 11:14:44 by mmoramov         ###   ########.fr       */
+/*   Updated: 2023/09/17 14:03:55 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ int	ft_sleep(int millisec, t_var *var)
 	int	tm_end;
 
 	tm_end = ft_time_passed(var->tm_start) + millisec;
-	while(ft_time_passed(var->tm_start) < tm_end)
+	while (ft_time_passed(var->tm_start) < tm_end)
 		usleep(200);
-	return(0);
+	return (0);
 }
 
 int	ft_time_passed(struct timeval tm_start)
@@ -28,8 +28,9 @@ int	ft_time_passed(struct timeval tm_start)
 	suseconds_t		tm_passed;
 
 	gettimeofday(&tm_end, NULL);
-	tm_passed = (tm_end.tv_usec/1000 + tm_end.tv_sec*1000) - (tm_start.tv_usec/1000 + tm_start.tv_sec*1000);
-	return(tm_passed);
+	tm_passed = (tm_end.tv_usec / 1000 + tm_end.tv_sec * 1000)
+		- (tm_start.tv_usec / 1000 + tm_start.tv_sec * 1000);
+	return (tm_passed);
 }
 
 size_t	ft_strlen(const char *s)
